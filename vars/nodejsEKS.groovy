@@ -16,7 +16,6 @@ def call(Map configMap){
             component = configMap.get("component")
             project = configMap.get("project")
             def releaseExists = ""
-            BRANCH_NAME = env.BRANCH_NAME
         }
         stages {
             stage('read the version'){

@@ -15,7 +15,7 @@ def call(Map configMap){
             account_id = pipelineGlobals.account_id()
             component = configMap.get("component")
             project = configMap.get("project")
-           // def releaseExists = ""
+            def releaseExists = ""
         }
         stages {
             stage('read the version'){
@@ -48,7 +48,6 @@ def call(Map configMap){
             }
             stage('Docker build'){
                 steps{
-
                     sh """
                         aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${account_id}.dkr.ecr.${region}.amazonaws.com
                         docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/${project}-${component}:${appVersion} .

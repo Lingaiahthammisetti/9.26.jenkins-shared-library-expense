@@ -77,6 +77,7 @@ def call(Map configMap){
                                 cd helm
                                 sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                                 helm install ${component} -n ${project} .
+                                
                             """
                         }
                         else{

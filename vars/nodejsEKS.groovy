@@ -1,7 +1,7 @@
 def call(Map configMap){
    
    // Global scope
-       def appVersion = '' //variable declaration
+       //def appVersion = '' //variable declaration
    
     pipeline {
         agent {
@@ -26,7 +26,7 @@ def call(Map configMap){
                     script{
                         echo sh(returnStdout: true, script: 'env')
                         def packageJson = readJSON file: 'package.json'
-                        env.appVersion = packageJson.version
+                        //env.appVersion = packageJson.version
                         echo "application version: ${env.appVersion}"
 
                     }

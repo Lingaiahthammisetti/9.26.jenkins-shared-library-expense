@@ -1,8 +1,4 @@
 def call(Map configMap){
-   
-   // Global scope
-       //def appVersion = '' //variable declaration
-   
     pipeline {
         agent {
             label 'AGENT-1'
@@ -13,6 +9,7 @@ def call(Map configMap){
             ansiColor('xterm')
         }
         environment{
+            def appVersion = '' //variable declaration
             //nexusUrl = pipelineGlobals.nexusURL()
             region = pipelineGlobals.region()
             account_id = pipelineGlobals.account_id()
@@ -26,8 +23,8 @@ def call(Map configMap){
                     script{
                         echo sh(returnStdout: true, script: 'env')
                         def packageJson = readJSON file: 'package.json'
-                        //env.appVersion = packageJson.version
-                        echo "application version: ${env.appVersion}"
+                        appVersion = packageJson.version
+                        echo "application version: $appVersion"
 
                     }
                 }
@@ -37,14 +34,14 @@ def call(Map configMap){
                 sh """
                     npm install
                     ls -ltr
-                    echo "application version: ${env.appVersion}"
+                    echo "application version: $appVersion"
                 """
                 }
             }
             stage('Build'){
                 steps{
                     sh """
-                    zip -q -r ${component}-${env.appVersion}.zip * -x Jenkinsfile -x ${component}-${env.appVersion}.zip
+                    zip -q -r ${component}-${appVersion}.zip * -x Jenkinsfile -x ${component}-${appVersion}.zip
                     ls -ltr
                     """
                 }
@@ -53,8 +50,8 @@ def call(Map configMap){
                 steps{
                     sh """
                         aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${account_id}.dkr.ecr.${region}.amazonaws.com
-                        docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/${project}-${component}:${env.appVersion} .
-                        docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/${project}-${component}:${env.appVersion}
+                        docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/${project}-${component}:${appVersion} .
+                        docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/${project}-${component}:${appVersion}
                     """
                 }
             }
@@ -78,9 +75,8 @@ def call(Map configMap){
                             sh"""
                                 aws eks update-kubeconfig --region ${region} --name ${project}-dev
                                 cd helm
-                                sed -i 's/IMAGE_VERSION/${env.appVersion}/g' values.yaml
+                                sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                                 helm install ${component} -n ${project} .
-                                
                             """
                         }
                         else{
@@ -88,7 +84,7 @@ def call(Map configMap){
                             sh"""
                                 aws eks update-kubeconfig --region ${region} --name ${project}-dev
                                 cd helm
-                                sed -i 's/IMAGE_VERSION/${env.appVersion}/g' values.yaml
+                                sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
                                 helm upgrade ${component} -n ${project} .
                             """
                         }

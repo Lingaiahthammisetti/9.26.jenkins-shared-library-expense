@@ -1,4 +1,8 @@
 def call(Map configMap){
+   
+   // Global scope
+       def appVersion = '' //variable declaration
+   
     pipeline {
         agent {
             label 'AGENT-1'
@@ -9,7 +13,7 @@ def call(Map configMap){
             ansiColor('xterm')
         }
         environment{
-            def appVersion = '' //variable declaration
+            // def appVersion = '' //variable declaration
             //nexusUrl = pipelineGlobals.nexusURL()
             region = pipelineGlobals.region()
             account_id = pipelineGlobals.account_id()

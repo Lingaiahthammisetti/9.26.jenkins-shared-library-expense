@@ -11,6 +11,7 @@ def call(Map configMap){
             timeout(time: 30, unit: 'MINUTES')
             disableConcurrentBuilds()
             ansiColor('xterm')
+            cleanWs()
         }
         environment{
             //nexusUrl = pipelineGlobals.nexusURL()
@@ -20,11 +21,6 @@ def call(Map configMap){
             project = configMap.get("project")
         }
         stages {
-            stage('Cleanup Workspace') {
-               steps {
-                  cleanWs()
-                   }
-                 }
             stage('read the version'){
                 steps{
                     script{

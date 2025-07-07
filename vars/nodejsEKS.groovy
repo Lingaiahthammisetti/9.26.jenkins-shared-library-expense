@@ -1,8 +1,4 @@
 def call(Map configMap){
-
-    def appVersion = ''   // ✅ Properly scoped Groovy variable
-    def releaseExists = '' // Also move this here
-    def packageJson  = ''
     pipeline {
         agent {
             label 'AGENT-1'
@@ -13,18 +9,20 @@ def call(Map configMap){
             ansiColor('xterm')
         }
         environment{
+            def appVersion = '' //variable declaration
             //nexusUrl = pipelineGlobals.nexusURL()
             region = pipelineGlobals.region()
             account_id = pipelineGlobals.account_id()
             component = configMap.get("component")
             project = configMap.get("project")
+            def releaseExists = ""
         }
         stages {
             stage('read the version'){
                 steps{
                     script{
                         echo sh(returnStdout: true, script: 'env')
-                        packageJson = readJSON file: 'package.json'
+                        def packageJson = readJSON file: 'package.json'
                         appVersion = packageJson.version
                         echo "application version: $appVersion"
 
@@ -42,6 +40,7 @@ def call(Map configMap){
             }
             stage('Build'){
                 steps{
+                    cleanWs() // built-in Jenkins function to wipe workspace
                     sh """
                     zip -q -r ${component}-${appVersion}.zip * -x Jenkinsfile -x ${component}-${appVersion}.zip
                     ls -ltr

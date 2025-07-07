@@ -11,7 +11,6 @@ def call(Map configMap){
             timeout(time: 30, unit: 'MINUTES')
             disableConcurrentBuilds()
             ansiColor('xterm')
-            cleanWs()
         }
         environment{
             //nexusUrl = pipelineGlobals.nexusURL()

@@ -40,7 +40,6 @@ def call(Map configMap){
             }
             stage('Build'){
                 steps{
-                    cleanWs() // built-in Jenkins function to wipe workspace
                     sh """
                     zip -q -r ${component}-${appVersion}.zip * -x Jenkinsfile -x ${component}-${appVersion}.zip
                     ls -ltr

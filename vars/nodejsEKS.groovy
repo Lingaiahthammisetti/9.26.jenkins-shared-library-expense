@@ -40,6 +40,7 @@ def call(Map configMap){
             }
             stage('Build'){
                 steps{
+                    cleanWs() // built-in Jenkins function to wipe workspace
                     sh """
                     zip -q -r ${component}-${appVersion}.zip * -x Jenkinsfile -x ${component}-${appVersion}.zip
                     ls -ltr
@@ -148,6 +149,8 @@ def call(Map configMap){
             always { 
                 echo 'I will always say Hello again!'
                 deleteDir()
+                echo 'Cleaning up workspace'
+                cleanWs()
             }
             success { 
                 echo 'I will run when pipeline is success'

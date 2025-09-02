@@ -45,6 +45,7 @@ pipeline {
                 """
             }
         }
+        /*
         stage('Docker build'){
             steps{
                 sh """
@@ -57,6 +58,7 @@ pipeline {
             }
         }
 
+     //This is nodejsEKS deployment with helm
         stage('Deploy'){
             steps{
                 sh """
@@ -69,8 +71,9 @@ pipeline {
                     helm upgrade --install backend . --namespace expense
                 """
             }
-        }
+        } */
         
+
         /* stage('Sonar Scan'){
             environment {
                 scannerHome = tool 'sonar-6.0' //referring scanner CLI
@@ -92,7 +95,7 @@ pipeline {
             }
         } */
 
-        /* stage('Nexus Artifact Upload'){
+         stage('Nexus Artifact Upload'){
             steps{
                 script{
                     nexusArtifactUploader(
@@ -113,7 +116,7 @@ pipeline {
                 }
             }
         } */
-        /* stage('Deploy'){
+         stage('Deploy'){
             when{
                 expression{
                     params.deploy
@@ -127,7 +130,7 @@ pipeline {
                     build job: 'backend-deploy', parameters: params, wait: false
                 }
             }
-        } */
+        } 
     }
     post { 
         always { 
